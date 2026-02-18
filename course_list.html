@@ -1,0 +1,1294 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Real Edge Learning UI Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <style>
+      /* ================= BASE ================= */
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f5f7fa;
+        color: #1a1a1a;
+        line-height: 1.6;
+      }
+
+      /* ================= HEADER ================= */
+
+      .header {
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(
+          180deg,
+          rgba(14, 43, 92, 0.98),
+          rgba(11, 35, 72, 0.92)
+        );
+        color: white;
+        padding: 14px 28px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1304px;
+        margin: 0 auto;
+        position: sticky;
+        top: 0;
+        z-index: 1200;
+        box-shadow: 0 8px 30px rgba(2, 6, 23, 0.18);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        transition:
+          background 0.18s ease,
+          box-shadow 0.18s ease,
+          padding 0.18s ease;
+      }
+
+      .logo {
+        font-weight: 600;
+        font-size: 20px;
+        letter-spacing: 0.5px;
+      }
+
+      /* styled logo link */
+      .logo a,
+      .logo-link {
+        color: white;
+        text-decoration: none;
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-weight: 700;
+        background: transparent;
+      }
+
+      .logo a:hover,
+      .logo-link:hover {
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .logo a:focus-visible,
+      .logo-link:focus-visible {
+        outline: 3px solid rgba(255, 255, 255, 0.14);
+        outline-offset: 2px;
+      }
+
+      .nav {
+        display: flex;
+        gap: 18px;
+        align-items: center;
+        font-size: 15px;
+      }
+
+      /* parent item provides spacing and hover background so child anchors don't double-highlight */
+      .nav div {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 8px;
+        transition:
+          background 0.18s ease,
+          transform 0.12s ease,
+          opacity 0.12s ease;
+      }
+
+      .nav a {
+        cursor: pointer;
+        opacity: 0.98;
+        color: white;
+        text-decoration: none;
+        padding: 0; /* spacing provided by parent div */
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .nav div:hover {
+        background: rgba(255, 255, 255, 0.06);
+        transform: translateY(-2px);
+        opacity: 1;
+      }
+
+      .nav a.active {
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.08),
+          rgba(255, 255, 255, 0.03)
+        );
+        box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.02);
+      }
+
+      .signup {
+        background: white;
+        color: #0e2b5c;
+        padding: 8px 14px;
+        border-radius: 10px;
+        font-weight: 700;
+        box-shadow:
+          0 6px 18px rgba(14, 43, 92, 0.12),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+        border: 1px solid rgba(14, 43, 92, 0.06);
+      }
+
+      /* ================= LAYOUT ================= */
+      .container {
+        padding: 24px 40px;
+        max-width: 1280px;
+        margin: 0 auto;
+      }
+
+      .section {
+        margin-bottom: 34px;
+      }
+
+      .section h3 {
+        font-size: 14px;
+        letter-spacing: 1px;
+        color: #0e2b5c;
+        margin-bottom: 12px;
+      }
+
+      .grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      /* Desktop & Large: show 4 cards per row using CSS Grid */
+      @media (min-width: 992px) {
+        .grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 20px;
+        }
+
+        /* Let cards expand to fill the grid column */
+        .card {
+          width: 100%;
+          max-width: none;
+        }
+      }
+
+      /* Mobile: single column */
+      @media (max-width: 599px) {
+        .container {
+          padding: 12px 16px;
+        }
+
+        .grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+
+        .card {
+          width: 100%;
+          border-radius: 8px;
+        }
+
+        .card img {
+          aspect-ratio: 16/9;
+        }
+
+        .header {
+          padding: 12px 16px;
+        }
+
+        .nav {
+          display: none;
+        }
+      }
+
+      /* ================= CARD ================= */
+      .card {
+        width: 100%;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+        position: relative;
+        overflow: hidden;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.18);
+      }
+
+      .card img {
+        width: 100%;
+        object-fit: cover;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        transition: filter 0.25s ease;
+        aspect-ratio: 16/9;
+      }
+
+      .card-body {
+        padding: 16px 14px;
+      }
+
+      .title {
+        font-weight: 600;
+        margin-bottom: 6px;
+        font-size: 16px;
+      }
+
+      .duration {
+        color: #666;
+        font-size: 12.5px;
+      }
+
+      /* dim image on hover */
+      .card:hover img {
+        filter: brightness(60%);
+      }
+
+      /* Hover overlay animation */
+      .hover-box {
+        transform: translateY(6px);
+        transition:
+          opacity 0.25s ease,
+          transform 0.25s ease;
+      }
+
+      .card:hover .hover-box {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* ================= OVERLAY ================= */
+      .hover-box {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100%;
+
+        background: rgba(17, 24, 39, 0.65);
+
+        opacity: 0;
+        transition: opacity 0.25s ease;
+
+        padding: 12px;
+        color: white;
+
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+      }
+
+      .hover-box b {
+        font-size: 13.5px;
+        margin-bottom: 6px;
+      }
+
+      .hover-box p {
+        font-size: 12.5px;
+        line-height: 1.45;
+        margin: 0;
+
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 8;
+      }
+
+      .hover-box div {
+        font-size: 12px;
+        margin-top: 6px;
+        opacity: 0.9;
+      }
+
+      /* button pinned bottom-right */
+      .hover-box .btn {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+
+        background: white;
+        color: #0e2b5c;
+        font-weight: bold;
+        border-radius: 6px;
+      }
+
+      /* visible CTA for mobile / discoverability */
+      .learn-more {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 8px 12px;
+        font-size: 13px;
+        background: #ffffff;
+        color: #0e2b5c;
+        border-radius: 6px;
+        border: 1px solid rgba(14, 43, 92, 0.08);
+        cursor: pointer;
+      }
+
+      /* Buttons and touch targets */
+      .btn,
+      .learn-more,
+      .enroll-btn {
+        padding: 10px 14px;
+        min-height: 44px;
+        min-width: 44px;
+        border-radius: 8px;
+      }
+
+      /* ================= BUTTON ================= */
+      .btn {
+        background: #0e2b5c;
+        color: white;
+        padding: 7px 12px;
+        border: none;
+        font-size: 12.5px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+      }
+
+      .btn:hover {
+        background: #0a2045;
+      }
+
+      /* ================= DETAILS ================= */
+      .details {
+        margin-top: 40px;
+        background: white;
+        padding: 16px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      }
+
+      /* ================ MODAL (Course Details) ================ */
+      .modal {
+        display: none;
+      }
+
+      .modal.open {
+        display: block;
+      }
+
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        z-index: 1000;
+      }
+
+      .modal-panel {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        max-width: 900px;
+        width: calc(100% - 40px);
+        max-height: 90vh;
+        overflow: visible;
+        border-radius: 10px;
+        padding: 18px;
+        z-index: 1001;
+        box-shadow: 0 20px 40px rgba(2, 6, 23, 0.25);
+      }
+
+      .modal-content {
+        padding-top: 16px;
+        max-height: calc(90vh - 160px);
+        overflow: auto;
+        scrollbar-gutter: stable;
+      }
+
+      /* Modal two-column content (left: audience & objectives, right: modules) */
+      .modal-sections {
+        display: flex;
+        gap: 24px;
+        align-items: flex-start;
+        margin-top: 14px;
+      }
+
+      .modal-sections-left,
+      .modal-sections-right {
+        width: 50%;
+        box-sizing: border-box;
+      }
+
+      .modal-sections-right {
+        background: #fbfcfd;
+        border: 1px solid rgba(14, 43, 92, 0.04);
+        padding: 12px;
+        border-radius: 8px;
+      }
+
+      .modal-sections .section-title {
+        margin: 6px 0 10px;
+        font-size: 15px;
+        color: #0e2b5c;
+      }
+
+      @media (max-width: 799px) {
+        .modal-sections {
+          flex-direction: column;
+        }
+        .modal-sections-right {
+          width: 100%;
+        }
+      }
+
+      .modal-close {
+        position: absolute;
+        right: 12px;
+        top: 8px;
+        background: transparent;
+        border: none;
+        font-size: 22px;
+        cursor: pointer;
+        color: #1a1a1a;
+      }
+
+      .modal-meta {
+        color: #666;
+        font-size: 13px;
+        margin-bottom: 12px;
+      }
+
+      .course-layout {
+        display: flex;
+        gap: 28px;
+      }
+
+      /* IMAGE floats right */
+      .course-image {
+        float: right;
+        width: 420px;
+        margin-left: 30px;
+        margin-bottom: 20px;
+        border-radius: 6px;
+      }
+
+      /* Title */
+      .course-title {
+        font-size: 40px;
+        font-weight: 500;
+        margin-bottom: 10px;
+      }
+
+      /* Duration */
+      .course-duration {
+        font-size: 22px;
+        margin-bottom: 18px;
+      }
+
+      /* Description */
+      .course-desc {
+        font-size: 18px;
+        line-height: 1.6;
+        margin-bottom: 24px;
+      }
+
+      .course-left {
+        flex: 1;
+      }
+
+      .course-right {
+        width: 420px;
+      }
+
+      .course-right img {
+        width: 100%;
+        border-radius: 6px;
+      }
+
+      /* Section titles */
+      .section-title {
+        font-weight: bold;
+        font-size: 22px;
+        margin: 24px 0 12px;
+      }
+
+      .course-list {
+        margin: 0 0 10px 20px;
+        font-size: 18px;
+      }
+
+      .course-list li {
+        margin-bottom: 6px;
+      }
+
+      /* Footer area */
+      .course-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 30px;
+      }
+
+      /* Clear float before footer */
+      .clearfix {
+        clear: both;
+      }
+
+      .enroll-btn {
+        background: #7fc66a;
+        border: 1px solid #2f6b2f;
+        padding: 12px 26px;
+        font-size: 20px;
+        cursor: pointer;
+      }
+
+      .heart {
+        font-size: 26px;
+        cursor: pointer;
+        color: #1a1a1a;
+        user-select: none;
+        transition:
+          color 0.18s ease,
+          transform 0.12s ease;
+        line-height: 1;
+      }
+
+      .heart.liked {
+        color: #e74c3c;
+        transform: scale(1.06);
+        text-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
+      }
+
+      /* Mobile: full-screen sheet */
+      @media (max-width: 599px) {
+        .modal-panel {
+          left: 0;
+          top: auto;
+          bottom: 0;
+          transform: none;
+          width: 100%;
+          height: 82vh;
+          border-radius: 12px 12px 0 0;
+        }
+        .modal-content {
+          max-height: calc(82vh - 120px);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="logo">
+        <a href="./index.html" class="logo-link"
+          ><img src="./static/img/rel_logo_.png"
+        /></a>
+      </div>
+      <div class="nav">
+        <div><a href="./course_list.html">For Individuals</a></div>
+        <div>For Corporate</div>
+        <div>About us</div>
+        <div>Sign In</div>
+        <div class="signup">Sign Up</div>
+      </div>
+    </div>
+    <!-- Course details modal (populated dynamically) -->
+    <div
+      id="course-modal"
+      class="modal"
+      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="modal-backdrop" data-action="close"></div>
+      <div class="modal-panel" role="document">
+        <button class="modal-close" aria-label="Close">×</button>
+        <div id="course-modal-content" class="modal-content" tabindex="-1">
+          <!-- populated by JS -->
+        </div>
+        <div class="course-footer">
+          <button class="enroll-btn">Enroll now</button>
+          <div class="heart">♡</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const modal = document.getElementById('course-modal');
+        const content = document.getElementById('course-modal-content');
+        const backdrop = modal.querySelector('.modal-backdrop');
+        const closeBtn = modal.querySelector('.modal-close');
+        const modalEnrollBtn = modal.querySelector('.enroll-btn');
+        let lastFocus = null;
+        let currentCard = null;
+        let modalPushed = false; // whether we pushed history for the open modal
+        let modalPrevUrl = null; // previous url before push
+        let openedFromDirect = false; // whether modal was opened from a direct deep-link
+        let savedBodyPaddingRight = '';
+
+        function slugify(s) {
+          return s
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)/g, '');
+        }
+
+        function openModal(id, opts = { push: true }) {
+          lastFocus = document.activeElement;
+          // add compensation for scrollbar removal to prevent layout shift
+          try {
+            savedBodyPaddingRight = document.body.style.paddingRight || '';
+            const sbw =
+              window.innerWidth - document.documentElement.clientWidth;
+            if (sbw > 0) document.body.style.paddingRight = sbw + 'px';
+          } catch (e) {
+            savedBodyPaddingRight = document.body.style.paddingRight || '';
+          }
+
+          modal.setAttribute('aria-hidden', 'false');
+          modal.classList.add('open');
+          document.body.style.overflow = 'hidden';
+          // ensure footer is visible when opening modal
+          try {
+            const footerEl = modal.querySelector('.course-footer');
+            if (footerEl) footerEl.style.display = '';
+          } catch (e) {}
+          closeBtn.focus();
+
+          if (opts.push) {
+            // remember previous URL so we can restore it on close if needed
+            modalPrevUrl = location.pathname + location.search;
+            try {
+              history.pushState({ modal: id }, '', '/courses/' + id);
+              modalPushed = true;
+              openedFromDirect = false;
+            } catch (e) {
+              modalPushed = false;
+            }
+          } else {
+            // opened via direct link (no push)
+            openedFromDirect = true;
+            modalPushed = false;
+            // compute a sensible fallback URL to restore when closing
+            modalPrevUrl = (location.pathname || '/').replace(
+              /\/courses\/[^\/]+$/,
+              '/course_list.html',
+            );
+          }
+        }
+
+        function closeModal() {
+          if (!modal.classList.contains('open')) return;
+          modal.setAttribute('aria-hidden', 'true');
+          modal.classList.remove('open');
+          // restore body scroll and padding to avoid layout shift
+          try {
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = savedBodyPaddingRight || '';
+          } catch (e) {}
+          if (lastFocus) lastFocus.focus();
+          // restore footer display when modal closes
+          try {
+            const footerEl = modal.querySelector('.course-footer');
+            if (footerEl) footerEl.style.display = '';
+          } catch (e) {}
+          // cleanup aria-describedby on origin card
+          if (currentCard) {
+            currentCard.removeAttribute('aria-describedby');
+            currentCard = null;
+          }
+
+          // Restore URL / history so the address bar shows course_list.html
+          if (modalPushed) {
+            // we pushed a state when opening; go back to restore previous URL
+            modalPushed = false;
+            try {
+              history.back();
+            } catch (e) {}
+          } else {
+            // opened from a direct link (or push not available) — replace the URL
+            try {
+              const restore =
+                modalPrevUrl ||
+                location.pathname.replace(
+                  /\/courses\/[^\/]+$/,
+                  '/course_list.html',
+                );
+              history.replaceState(null, '', restore);
+            } catch (e) {}
+          }
+
+          modalPrevUrl = null;
+          openedFromDirect = false;
+        }
+
+        // populate content from a card node and show modal
+        function showCourseFromCard(card, opts = { push: true }) {
+          const title = card.querySelector('.title')?.textContent || 'Course';
+          const duration = card.querySelector('.duration')?.textContent || '';
+          const img = card.querySelector('img')?.getAttribute('src') || '';
+          const desc = card.querySelector('.hover-box p')?.textContent || '';
+          const id = card.dataset.courseId || slugify(title);
+
+          const titleId = 'course-title-' + id;
+          content.innerHTML = `\
+          <div style="min-height: 278px">\
+<img src="${img}" class="course-image" alt="${title}">\
+\
+<h2 id="${titleId}" class="course-title">${title}</h2>\
+<div class="course-duration">${duration}</div>\
+<div class="course-desc">${desc}</div>\
+          </div>\
+\
+<div class="modal-sections">\
+  <div class="modal-sections-left">\
+    <div class="section">\
+      <div class="section-title">Target Audience</div>\
+      <ul class="course-list">\
+        <li>Beginners wanting hands-on practice</li>\
+        <li>Engineers exploring applied workflows</li>\
+        <li>Students building portfolio projects</li>\
+      </ul>\
+    </div>\
+\
+    <div class="section">\
+      <div class="section-title">Learning Objectives</div>\
+      <ul class="course-list">\
+        <li>Understand core concepts and terms</li>\
+        <li>Build and evaluate practical projects</li>\
+        <li>Apply tools and workflows with confidence</li>\
+      </ul>\
+    </div>\
+  </div>\
+\
+  <aside class="modal-sections-right" aria-label="Course contents">\
+    <div class="section-title">Course Contents</div>\
+    <ol class="course-list">\
+      <li>Module 1 — Introduction & setup</li>\
+      <li>Module 2 — Core techniques</li>\
+      <li>Module 3 — Project workshop</li>\
+      <li>Module 4 — Next steps</li>\
+    </ol>\
+  </aside>\
+</div>`;
+
+          // set aria-labelledby on modal panel
+          const panel = modal.querySelector('.modal-panel');
+          if (panel) panel.setAttribute('aria-labelledby', titleId);
+
+          // set aria-describedby on origin card to link for screen readers
+          card.setAttribute('aria-describedby', titleId);
+          currentCard = card;
+
+          openModal(id, { push: !!opts.push });
+        }
+
+        // helper: ensure cards have data-course-id and add CTA
+        function initCards() {
+          document.querySelectorAll('.card').forEach((card) => {
+            const titleEl = card.querySelector('.title');
+            const title = titleEl?.textContent || 'course';
+            const id = slugify(title);
+            if (!card.dataset.courseId) card.dataset.courseId = id;
+            // add visible learn-more CTA if not present
+            if (!card.querySelector('.learn-more')) {
+              const btn = document.createElement('button');
+              btn.className = 'learn-more';
+              btn.type = 'button';
+              btn.textContent = 'Learn more';
+              card.querySelector('.card-body')?.appendChild(btn);
+            }
+          });
+        }
+
+        // add lazy loading and simple srcset fallback
+        function initImages() {
+          document.querySelectorAll('.card img').forEach((img) => {
+            if (!img.hasAttribute('loading'))
+              img.setAttribute('loading', 'lazy');
+            if (!img.hasAttribute('srcset'))
+              img.setAttribute('srcset', img.getAttribute('src'));
+          });
+        }
+
+        // populate content from clicked card
+        document.addEventListener('click', function (e) {
+          const card = e.target.closest('.card');
+          if (!card) return;
+          if (modal.contains(e.target)) return;
+
+          showCourseFromCard(card, { push: false });
+        });
+
+        // touch: swipe down to close on mobile
+        (function addSwipeToClose() {
+          let startY = 0,
+            currentY = 0,
+            touching = false;
+          const panel = modal.querySelector('.modal-panel');
+          if (!panel) return;
+          panel.addEventListener(
+            'touchstart',
+            (ev) => {
+              if (ev.touches.length !== 1) return;
+              startY = ev.touches[0].clientY;
+              touching = true;
+            },
+            { passive: true },
+          );
+          panel.addEventListener(
+            'touchmove',
+            (ev) => {
+              if (!touching) return;
+              currentY = ev.touches[0].clientY;
+            },
+            { passive: true },
+          );
+          panel.addEventListener('touchend', () => {
+            if (!touching) return;
+            touching = false;
+            const delta = currentY - startY;
+            if (delta > 80) closeModal();
+            startY = currentY = 0;
+          });
+        })();
+
+        // initialize
+        initCards();
+        initImages();
+
+        // deep-link: open modal on load if pathname matches /courses/:id
+        (function openFromPath() {
+          const m = location.pathname.match(/^\/courses\/([^\/]+)/);
+          if (!m) return;
+          const id = m[1];
+          const card = document.querySelector(`[data-course-id="${id}"]`);
+          if (card) {
+            // open without pushing a new history entry
+            showCourseFromCard(card, { push: false });
+          } else {
+            // no matching card found; set a sensible restore URL
+            openedFromDirect = true;
+            modalPrevUrl = location.pathname.replace(
+              /\/courses\/[^\/]+$/,
+              '/course_list.html',
+            );
+          }
+        })();
+        // close interactions
+        backdrop.addEventListener('click', closeModal);
+        closeBtn.addEventListener('click', closeModal);
+
+        // enroll: save selected course and navigate to course_details.html
+        if (modalEnrollBtn) {
+          modalEnrollBtn.addEventListener('click', function () {
+            // If the modal heart is not liked, show only the text "login" in the modal
+            const modalHeart = modal.querySelector('.heart');
+            if (modalHeart && !modalHeart.classList.contains('liked')) {
+              // replace content with a simple login prompt (clickable image)
+              content.innerHTML = `
+                <div class="empty" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;background: rgba(227, 228, 232, 1);">
+                  <img id="login-img" src="./static/img/login1_.png" alt="login" style="max-width:100%;max-height:420px;cursor:pointer;border-radius:8px;" />
+                  <div style="margin-top:12px;color:#0e2b5c;font-weight:600;">login</div>
+                </div>
+              `;
+              const footer = modal.querySelector('.course-footer');
+              if (footer) footer.style.display = 'none';
+
+              // attach click handler to login image to route to course_details (hydrate via sessionStorage)
+              const loginImg = content.querySelector('#login-img');
+              if (loginImg) {
+                loginImg.setAttribute('role', 'button');
+                loginImg.setAttribute('tabindex', '0');
+                loginImg.addEventListener('click', function () {
+                  // collect course data same as enroll flow
+                  let title = '';
+                  let duration = '';
+                  let img = '';
+                  let desc = '';
+                  let id = '';
+
+                  if (currentCard) {
+                    title =
+                      currentCard.querySelector('.title')?.textContent || '';
+                    duration =
+                      currentCard.querySelector('.duration')?.textContent || '';
+                    img =
+                      currentCard.querySelector('img')?.getAttribute('src') ||
+                      '';
+                    desc =
+                      currentCard.querySelector('.hover-box p')?.textContent ||
+                      '';
+                    id = currentCard.dataset.courseId || slugify(title);
+                  } else {
+                    title =
+                      modal.querySelector('.course-title')?.textContent || '';
+                    duration =
+                      modal.querySelector('.course-duration')?.textContent ||
+                      '';
+                    img =
+                      modal
+                        .querySelector('.course-image')
+                        ?.getAttribute('src') || '';
+                    desc =
+                      modal.querySelector('.course-desc')?.textContent || '';
+                    id = slugify(title || 'course');
+                  }
+
+                  try {
+                    const payload = { id, title, duration, img, desc };
+                    sessionStorage.setItem(
+                      'selectedCourse',
+                      JSON.stringify(payload),
+                    );
+                  } catch (e) {}
+                  const params = encodeURIComponent(
+                    id || slugify(title || 'course'),
+                  );
+                  window.location.href = 'course_details.html?course=' + params;
+                });
+
+                // allow keyboard activation
+                loginImg.addEventListener('keydown', function (e) {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                  }
+                });
+              }
+
+              return;
+            }
+            // prefer data from origin card when available
+            let title = '';
+            let duration = '';
+            let img = '';
+            let desc = '';
+            let id = '';
+
+            if (currentCard) {
+              title = currentCard.querySelector('.title')?.textContent || '';
+              duration =
+                currentCard.querySelector('.duration')?.textContent || '';
+              img = currentCard.querySelector('img')?.getAttribute('src') || '';
+              desc =
+                currentCard.querySelector('.hover-box p')?.textContent || '';
+              id = currentCard.dataset.courseId || slugify(title);
+            } else {
+              title = modal.querySelector('.course-title')?.textContent || '';
+              duration =
+                modal.querySelector('.course-duration')?.textContent || '';
+              img =
+                modal.querySelector('.course-image')?.getAttribute('src') || '';
+              desc = modal.querySelector('.course-desc')?.textContent || '';
+              id = slugify(title || 'course');
+            }
+
+            // prefer local details page for this static mockup; keep sessionStorage for hydration
+            const params = encodeURIComponent(id || slugify(title || 'course'));
+            try {
+              const payload = { id, title, duration, img, desc };
+              sessionStorage.setItem('selectedCourse', JSON.stringify(payload));
+            } catch (e) {}
+            window.location.href = 'course_details.html?course=' + params;
+          });
+        }
+        window.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') closeModal();
+        });
+
+        // handle back/forward
+        window.addEventListener('popstate', function (e) {
+          if (!e.state || !e.state.modal) {
+            closeModal();
+          }
+        });
+
+        // basic focus trap inside modal
+        modal.addEventListener('keydown', function (e) {
+          if (e.key !== 'Tab') return;
+          const focusable = modal.querySelectorAll(
+            'a, button, [tabindex]:not([tabindex="-1"])',
+          );
+          if (!focusable.length) return;
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        });
+
+        // initialize hearts: clickable & keyboard accessible toggle
+        function initHearts() {
+          document.querySelectorAll('.heart').forEach((h) => {
+            h.setAttribute('role', 'button');
+            h.setAttribute('tabindex', '0');
+            const isLiked = h.classList.contains('liked');
+            h.setAttribute('aria-pressed', isLiked ? 'true' : 'false');
+            // normalize display
+            h.textContent = isLiked ? '♥' : '♡';
+
+            h.addEventListener('click', function () {
+              const liked = this.classList.toggle('liked');
+              this.textContent = liked ? '♥' : '♡';
+              this.setAttribute('aria-pressed', liked ? 'true' : 'false');
+            });
+
+            h.addEventListener('keydown', function (e) {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.click();
+              }
+            });
+          });
+        }
+
+        initHearts();
+      })();
+    </script>
+
+    <div class="container">
+      <!-- 3D PRINTING -->
+      <div class="section">
+        <h3>3D PRINTING</h3>
+        <div class="grid">
+          <div class="card">
+            <img src="./static/img/course01_3D-Printing.png" />
+            <div class="card-body">
+              <div class="title">Introduction to 3D Printing</div>
+              <div class="duration">1 hours</div>
+            </div>
+
+            <div class="hover-box">
+              <p>
+                Master the fundamentals of additive manufacturing, materials,
+                slicing software and creating your first printable models.
+              </p>
+            </div>
+          </div>
+
+          <div class="card">
+            <img src="./static/img/course01_3D-Printing.png" />
+            <div class="card-body">
+              <div class="title">3D Printing Intermediate</div>
+              <div class="duration">2 hours</div>
+            </div>
+
+            <div class="hover-box">
+              <p>
+                Master the intermediate skills in additive manufacturing,
+                materials, slicing software and creating your first printable
+                models.
+              </p>
+            </div>
+          </div>
+
+          <div class="card">
+            <img src="./static/img/course01_3D-Printing.png" />
+            <div class="card-body">
+              <div class="title">3D Printing Advanced</div>
+              <div class="duration">3 hours</div>
+            </div>
+
+            <div class="hover-box">
+              <p>
+                Master the advanced skills in additive manufacturing, materials,
+                slicing software and creating your first printable models.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DRONE TECHNOLOGY -->
+      <div class="section">
+        <h3>DRONE TECHNOLOGY</h3>
+        <div class="grid">
+          <div class="card">
+            <img src="./static/img/course02_Drone-Technology.jpg" />
+            <div class="card-body">
+              <div class="title">Drone Technology Basics</div>
+              <div class="duration">24 hours</div>
+            </div>
+
+            <div class="hover-box">
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+                nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+                sunt in culpa qui officia deserunt mollit anim id est laborum.
+              </p>
+            </div>
+          </div>
+
+          <div class="card">
+            <img src="./static/img/course02_Drone-Technology.jpg" />
+            <div class="card-body">
+              <div class="title">Drone Technology Intermediate</div>
+              <div class="duration">24 hours</div>
+            </div>
+
+            <div class="hover-box">
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+                nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+                sunt in culpa qui officia deserunt mollit anim id est laborum.
+              </p>
+            </div>
+          </div>
+
+          <div class="card">
+            <img src="./static/img/course02_Drone-Technology.jpg" />
+            <div class="card-body">
+              <div class="title">Drone Technology Professional</div>
+              <div class="duration">24 hours</div>
+            </div>
+
+            <div class="hover-box">
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+                nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+                sunt in culpa qui officia deserunt mollit anim id est laborum.
+                At vero eos et accusamus et iusto odio dignissimos ducimus qui
+                blanditiis praesentium voluptatum deleniti atque corrupti quos
+                dolores et quas molestias excepturi sint occaecati cupiditate
+                non provident, similique sunt in culpa qui officia deserunt
+                mollitia animi, id est laborum et dolorum fuga. Et harum quidem
+                rerum facilis est et expedita distinctio. Nam libero tempore,
+                cum soluta nobis est eligendi optio cumque nihil impedit quo
+                minus id quod maxime placeat facere possimus, omnis voluptas
+                assumenda est, omnis dolor repellendus. Temporibus autem
+                quibusdam et aut officiis debitis aut rerum necessitatibus saepe
+                eveniet ut et voluptates repudiandae sint et molestiae non
+                recusandae. Itaque earum rerum hic tenetur a sapiente delectus,
+                ut aut reiciendis voluptatibus maiores alias consequatur aut
+                perferendis doloribus asperiores repellat. On the other hand, we
+                denounce with righteous indignation and dislike men who are so
+                beguiled and demoralized by the charms of pleasure of the
+                moment, so blinded by desire, that they cannot foresee the pain
+                and trouble that are bound to ensue; and equal blame belongs to
+                those who fail in their duty through weakness of will, which is
+                the same as saying through shrinking from toil and pain. These
+                cases are perfectly simple and easy to distinguish. In a free
+                hour, when our power of choice is untrammelled and when nothing
+                prevents our being able to do what we like best, every pleasure
+                is to be welcomed and every pain avoided. But in certain
+                circumstances and owing to the claims of duty or the obligations
+                of business it will frequently occur that pleasures have to be
+                repudiated and annoyances accepted. The wise man therefore
+                always holds in these matters to this principle of selection: he
+                rejects pleasures to secure other greater pleasures, or else he
+                endures pains to avoid worse pains.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DATA ANALYTICS -->
+      <div class="section">
+        <h3>DATA ANALYTICS</h3>
+        <div class="grid">
+          <div class="card">
+            <img src="./static/img/course03_Data-Analytics-with-Excel.jpg" />
+            <div class="card-body">
+              <div class="title">Data Analytics with Excel</div>
+              <div class="duration">30 hours</div>
+            </div>
+
+            <div class="hover-box">
+              <p>
+                Use formulas, pivot tables and charts to turn raw data into
+                meaningful insights.
+              </p>
+            </div>
+          </div>
+
+          <div class="card">
+            <img src="./static/img/course04_Data-Analytics-with-Power-BI.jpg" />
+            <div class="card-body">
+              <div class="title">Data Analytics with Power BI</div>
+              <div class="duration">35 hours</div>
+            </div>
+
+            <div class="hover-box">
+              <p>
+                Design interactive dashboards and connect to multiple enterprise
+                data sources.
+              </p>
+            </div>
+          </div>
+
+          <div class="card">
+            <img src="./static/img/course01_3D-Printing.png" />
+            <div class="card-body">
+              <div class="title">ABC Course</div>
+              <div class="duration">35 hours</div>
+            </div>
+
+            <div class="hover-box">
+              <p>
+                Design interactive dashboards and connect to multiple enterprise
+                data sources.
+              </p>
+            </div>
+          </div>
+
+          <div class="card">
+            <img src="./static/img/course02_Drone-Technology.jpg" />
+            <div class="card-body">
+              <div class="title">XYZ Course</div>
+              <div class="duration">24 hours</div>
+            </div>
+
+            <div class="hover-box">
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+                nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+                sunt in culpa qui officia deserunt mollit anim id est laborum.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DATA ENGINEERING -->
+      <div class="section">
+        <h3>DATA ENGINEERING</h3>
+        <div class="grid">
+          <div class="card">
+            <img
+              src="./static/img/course05_Data-engineering-with-Azure-Databricks.jpg"
+            />
+            <div class="card-body">
+              <div class="title">Azure Databricks</div>
+              <div class="duration">40 hours</div>
+            </div>
+
+            <div class="hover-box">
+              <p>
+                Build scalable pipelines using Spark, Delta Lake and modern
+                lakehouse patterns.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
