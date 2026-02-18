@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Image from 'next/image';
+// decorative image uses a plain <img> so it doesn't create a layout wrapper
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -39,13 +39,11 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <Image
+        <img
           src='/images/landing_page_hero.png'
-          alt='Practical role-based training'
+          alt=''
           aria-hidden='true'
           className='hero-image'
-          width={1304}
-          height={885}
         />
       </div>
 
