@@ -402,11 +402,6 @@ a {
 .hero {
   position: relative;
   height: 885px;
-  /* render image at natural size (no scaling), positioned to the right */
-  background-image: url('/images/landing_page_hero1.png');
-  background-repeat: no-repeat;
-  background-position: top left;
-  background-size: 100%;
   display: flex;
   align-items: center;
   color: white;
@@ -425,23 +420,11 @@ a {
   background: transparent;
 }
 
-.hero {
-  cursor: pointer;
-}
-
 /* Dark blue overlay for readability */
 .hero-overlay {
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    rgba(14, 43, 92, 0.96) 0%,
-    rgba(14, 43, 92, 0.88) 35%,
-    rgba(14, 43, 92, 0.25) 65%,
-    rgba(14, 43, 92, 0) 100%
-  );
   display: flex;
-  align-items: center;
   position: relative;
   z-index: 1;
 }
@@ -449,8 +432,19 @@ a {
 .hero-content {
   max-width: 620px;
   padding-left: 86px;
+  margin-top: 96px;
   position: relative;
-  z-index: 3;
+  z-index: 2;
+}
+
+.hero-image {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .hero-content small {
@@ -463,10 +457,19 @@ a {
 .hero-content h1 {
   font-size: 68px;
   font-weight: 700;
+  font-style: italic;
   margin: 14px 0;
   line-height: 1.02;
   letter-spacing: -1px;
   text-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+  text-wrap-mode: nowrap;
+}
+
+.hero-content .bottom-paragraph {
+  margin-top: 328px;
+  color: rgba(4, 20, 21, 1);
+  width: 740px;
+  position: relative;
 }
 
 .hero-divider {
@@ -481,6 +484,7 @@ a {
   font-size: 22px;
   margin-bottom: 24px;
   opacity: 0.95;
+  line-height: 1.5;
 }
 
 .cta-primary {
@@ -510,10 +514,11 @@ a {
 /* Responsive */
 @media (max-width: 900px) {
   .hero {
-    /* on small screens let the background scale to cover for legibility */
     height: 600px;
-    background-position: center center;
-    background-size: cover;
+  }
+
+  .hero-image {
+    display: none;
   }
 
   .hero-content {
@@ -587,6 +592,8 @@ li {
   margin-top: 20px;
   cursor: pointer;
   font-weight: 600;
+  display: flex;
+  width: 232px;
 }
 
 .cta-course-list a {

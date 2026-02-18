@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -10,9 +11,42 @@ export default function Home() {
   return (
     <main>
       <div className='hero'>
-        <Link className='hero-link' href='/courses'>
-          For Individuals
-        </Link>
+        <div className='hero-overlay'>
+          <div className='hero-content'>
+            <small>Ready to start your dream career?</small>
+            <h1>Grow with</h1>
+            <h1>Real Edge Learning</h1>
+            <div className='hero-divider' />
+            <p>
+              Practical, job-focused online courses designed to help you gain
+              the skills and confidence to succeed.
+            </p>
+            <Link
+              href='/courses'
+              className='cta-primary'
+              aria-label='Explore courses'
+            >
+              Take the next step today
+            </Link>
+            <div className='bottom-paragraph'>
+              <p>
+                At <span className='highlight'>Real Edge Learning</span>, we
+                help you move from ambition to achievement. Our
+                industry-accepted cources combine expert instruction with
+                pratical, hands-on learning, so you gain real skills that
+                employers value.
+              </p>
+            </div>
+          </div>
+        </div>
+        <Image
+          src='/images/landing_page_hero.png'
+          alt='Practical role-based training'
+          aria-hidden='true'
+          className='hero-image'
+          width={1304}
+          height={885}
+        />
       </div>
 
       <div className='container'>
